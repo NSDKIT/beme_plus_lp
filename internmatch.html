@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InternMatch | 偽らずに挑戦できるインターン支援 - BeMe+</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.min.js"></script>
+    <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            --text-primary: #0a0a0a;
+            --text-secondary: #6b7280;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --bg-dark: #0a0a0a;
+            --bg-light: #fafafa;
+            --border-light: rgba(255, 255, 255, 0.1);
+            --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-dark);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 32px 80px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
+            border-radius: 50px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-badge svg {
+            width: 16px;
+            height: 16px;
+            color: #667eea;
+        }
+
+        .hero-badge span {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .hero-title {
+            font-size: clamp(3.5rem, 8vw, 6rem);
+            font-weight: 700;
+            margin-bottom: 32px;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title-main {
+            background: linear-gradient(135deg, #667eea, white, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            color: var(--text-muted);
+            margin-bottom: 48px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero-description {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--border-light);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Sections */
+        .section {
+            padding: 120px 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-light {
+            background: var(--bg-light);
+            color: var(--text-primary);
+        }
+
+        .section-dark {
+            background: var(--bg-dark);
+            color: white;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 80px auto;
+            line-height: 1.7;
+        }
+
+        .section-subtitle-dark {
+            color: var(--text-muted);
+        }
+
+        /* Story section */
+        .story-card {
+            background: white;
+            border-radius: 32px;
+            padding: 80px 60px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid #f0f0f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-gradient);
+        }
+
+        .story-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .story-highlight {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 32px 0;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Process section */
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .process-step {
+            text-align: center;
+            position: relative;
+        }
+
+        .process-step::before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            right: -20px;
+            width: 40px;
+            height: 2px;
+            background: var(--primary-gradient);
+            opacity: 0.3;
+        }
+
+        .process-step:last-child::before {
+            display: none;
+        }
+
+        .process-number {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px auto;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .process-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .process-description {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Features section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* FAQ section */
+        .faq-grid {
+            display: grid;
+            gap: 24px;
+            margin-top: 80px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid var(--border-light);
+        }
+
+        .faq-question {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .faq-answer {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* CTA section */
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            border-radius: 32px;
+            padding: 100px 60px;
+            margin: 120px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .cta-description {
+            font-size: 20px;
+            margin-bottom: 48px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: #9ca3af;
+            padding: 60px 32px 40px;
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .footer-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .copyright {
+            border-top: 1px solid #374151;
+            padding-top: 24px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 100px 20px 60px;
+            }
+
+            .section {
+                padding: 80px 20px;
+            }
+
+            .story-card,
+            .cta-section {
+                padding: 60px 30px;
+                margin: 60px 20px;
+            }
+
+            .features-grid,
+            .process-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .btn {
+                min-width: 200px;
+                justify-content: center;
+            }
+
+            .process-step::before {
+                display: none;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection styling */
+        ::selection {
+            background: rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="#" class="logo">BeMe+</a>
+            <ul class="nav-links">
+                <li><a href="#story">きっかけ</a></li>
+                <li><a href="#process">仕組み</a></li>
+                <li><a href="#features">特徴</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="index.html" style="color: #667eea;">← BeMe+に戻る</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span>InternMatch</span>
+            </div>
+            
+            <h1 class="hero-title">
+                <span class="hero-title-main">自分を偽らない挑戦が、<br>いちばん強い。</span>
+            </h1>
+            
+            <p class="hero-subtitle">在り方から始めるインターン支援サービス</p>
+            
+            <p class="hero-description">
+                経験・スキルだけでなく、「どうありたいか」でつながる関係を。<br>
+                地方にいながら、自分らしく企業とつながれる新しいインターンの形です。
+            </p>
+            
+            <div class="button-group">
+                <a href="#start" class="btn btn-primary">
+                    LINEで始める
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+                <a href="#story" class="btn btn-secondary">背景を見る</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section id="story" class="section section-light">
+        <h2 class="section-title">InternMatchができたきっかけ</h2>
+        <div class="story-card fade-in">
+            <div class="story-text">
+                <p>「2日とか5日のインターンで、何がわかるの？」<br>
+                表面だけの説明、無難なES。企業も学生も本音に届かない関係が多い。</p>
+                
+                <p class="story-highlight">
+                    自分が長期インターンで初めてチームに入ったとき、<br>
+                    会社の本当の魅力に気づけた。
+                </p>
+                
+                <p>でも地方にいると、そういう機会さえ少ない。</p>
+                
+                <p class="story-highlight">
+                    だから、"今の自分"のまま深く関われる仕組みを地方からつくりたかった。<br>
+                    それがInternMatchの原点。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="section section-dark">
+        <h2 class="section-title">InternMatchのしくみ</h2>
+        <p class="section-subtitle section-subtitle-dark">
+            学生と企業、両者に「対話」があるのが特徴です
+        </p>
+        
+        <div class="process-grid fade-in">
+            <div class="process-step">
+                <div class="process-number">1</div>
+                <h3 class="process-title">LINE登録</h3>
+                <p class="process-description">
+                    簡単なLINE登録からスタート。プロフィールを入力して、あなたの「在り方」を教えてください。
+                </p>
+            </div>
+            
+            <div class="process-step">
+                <div class="process-number">2</div>
+                <h3 class="process-title">応募 or スカウト</h3>
+                <p class="process-description">
+                    興味のある企業に応募するか、企業からのスカウトを待つ。条件ではなく共感ベースでマッチング。
+                </p>
+            </div>
+            
+            <div class="process-step">
+                <div class="process-number">3</div>
+                <h3 class="process-title">対話</h3>
+                <p class="process-description">
+                    面接ではなく対話から始まる。お互いの本音を話し、価値観や想いを共有する時間。
+                </p>
+            </div>
+            
+            <div class="process-step">
+                <div class="process-number">4</div>
+                <h3 class="process-title">インターン開始</h3>
+                <p class="process-description">
+                    約1ヶ月の実践的なインターン。リモート参加も可能で、地方からでも挑戦できます。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section section-light">
+        <h2 class="section-title">特徴</h2>
+        <p class="section-subtitle">
+            InternMatchが大切にしている3つのポイント
+        </p>
+        
+        <div class="features-grid fade-in">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">共感ベースのマッチング</h3>
+                <p class="feature-description">
+                    条件や経験ではなく、価値観や「在り方」でつながる。本当に合う企業と学生がマッチングできます。
+                </p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">面接ではなく対話</h3>
+                <p class="feature-description">
+                    評価される場ではなく、お互いを知る場。本音で話せる関係性から、真のマッチングが生まれます。
+                </p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">地方でも挑戦できる</h3>
+                <p class="feature-description">
+                    リモート参加支援により、地方にいても質の高いインターンに参加可能。場所に関係なく挑戦できます。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="section section-dark">
+        <h2 class="section-title">よくある質問</h2>
+        <div class="faq-grid fade-in">
+            <div class="faq-item">
+                <h3 class="faq-question">スキルがなくても参加できる？</h3>
+                <p class="faq-answer">
+                    もちろんです。ありのままの自分でOK。InternMatchは経験やスキルよりも、あなたの「在り方」や「挑戦する姿勢」を重視します。今の自分から始めて、インターンを通じて成長していけばいいのです。
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3 class="faq-question">企業とどんな話をするの？</h3>
+                <p class="faq-answer">
+                    本音で対話する場です。面接のような評価の場ではなく、お互いの価値観、将来の想い、仕事に対する考え方などを自然に話し合います。緊張せず、素直な自分で参加してください。
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3 class="faq-question">インターン期間は？</h3>
+                <p class="faq-answer">
+                    約1ヶ月が基本ですが、柔軟に調整可能です。学業との両立やあなたの状況に合わせて、企業と相談しながら期間や働き方を決められます。リモート参加も積極的にサポートしています。
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3 class="faq-question">地方にいても本当に参加できる？</h3>
+                <p class="faq-answer">
+                    はい、地方の学生も多数参加しています。リモートワークのサポートや、オンラインでの研修・ミーティングなど、場所に関係なく質の高い体験ができるよう企業と連携してサポートします。
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h3 class="faq-question">費用はかかりますか？</h3>
+                <p class="faq-answer">
+                    学生の利用は完全無料です。LINE登録から企業とのマッチング、インターン参加まで、一切費用はかかりません。安心してご利用ください。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">通るESではなく、話せる自分を。</h2>
+            <p class="cta-description">
+                InternMatchは、"今の自分"で踏み出すインターンの新しい形です。
+            </p>
+            <div class="button-group">
+                <a href="#" class="btn btn-primary" style="background: white; color: #667eea;">
+                    今すぐLINEで登録する
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+                <a href="#" class="btn btn-secondary" style="border-color: rgba(255,255,255,0.3);">
+                    もっと相談する
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3 class="footer-title">InternMatch by BeMe+</h3>
+            <div class="footer-links">
+                <a href="#">BeMe+について</a>
+                <a href="#">声キャン！</a>
+                <a href="#">プライバシーポリシー</a>
+                <a href="#">利用規約</a>
+                <a href="#">お問い合わせ</a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 BeMe+ Inc. All rights reserved. | 今の自分で、世界をひらく</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerHeight = 70;
+                    const targetPosition = target.offsetTop - headerHeight;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0.2s';
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all elements that should animate
+        document.querySelectorAll('.story-card, .process-grid, .features-grid, .faq-grid').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Header scroll effect
+        let lastScrollY = window.scrollY;
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            const currentScrollY = window.scrollY;
+            
+            if (currentScrollY > 100) {
+                header.style.background = 'rgba(10, 10, 10, 0.95)';
+                header.style.backdropFilter = 'blur(30px)';
+            } else {
+                header.style.background = 'rgba(10, 10, 10, 0.9)';
+                header.style.backdropFilter = 'blur(20px)';
+            }
+            
+            lastScrollY = currentScrollY;
+        });
+
+        // Add stagger animation to process steps
+        setTimeout(() => {
+            const processSteps = document.querySelectorAll('.process-step');
+            processSteps.forEach((step, index) => {
+                step.style.animationDelay = `${index * 0.2}s`;
+                step.style.opacity = '0';
+                step.style.transform = 'translateY(20px)';
+                step.style.animation = 'fadeInUp 0.8s ease-out forwards';
+            });
+        }, 500);
+
+        // Add stagger animation to feature items
+        setTimeout(() => {
+            const featureItems = document.querySelectorAll('.feature-item');
+            featureItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.animation = 'fadeInUp 0.8s ease-out forwards';
+            });
+        }, 1000);
+
+        // Add stagger animation to FAQ items
+        setTimeout(() => {
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.animation = 'fadeInUp 0.8s ease-out forwards';
+            });
+        }, 1500);
+    </script>
+</body>
+</html>

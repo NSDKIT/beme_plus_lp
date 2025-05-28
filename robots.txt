@@ -1,0 +1,133 @@
+# BeMe+ Robots.txt
+# 検索エンジンクローラーの動作を制御
+
+# すべてのクローラーに対する設定
+User-agent: *
+
+# 許可するページ（メインコンテンツ）
+Allow: /
+Allow: /index.html
+Allow: /internmatch.html
+Allow: /koecan.html
+
+# 許可する静的リソース
+Allow: /assets/
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
+# 禁止するページ・ディレクトリ
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /_test/
+Disallow: /temp/
+
+# 一時的な開発ファイル（通常は存在しないが念のため）
+Disallow: *.tmp
+Disallow: *.bak
+Disallow: *.old
+Disallow: /draft/
+Disallow: /staging/
+
+# プライバシー関連ページ（インデックスは許可するが優先度を下げる）
+# Allow: /privacy-policy.html
+# Allow: /terms-of-service.html
+
+# 特定の検索エンジン向け設定
+# Googlebot
+User-agent: Googlebot
+Allow: /
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+
+# Yahoo検索（Slurp）
+User-agent: Slurp
+Allow: /
+
+# 悪質なボット対策
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# サイトマップの場所を指定
+Sitemap: https://your-domain.com/sitemap.xml
+
+# クロール頻度の調整（サーバー負荷軽減）
+Crawl-delay: 1
+
+# ===================================
+# 設定説明とメンテナンス指示
+# ===================================
+
+# 1. ドメイン変更時の対応
+#    - "your-domain.com" を実際のドメインに変更
+#    - Sitemap のURLを正確なものに更新
+
+# 2. 新ページ追加時の対応
+#    - 新しいページがある場合は Allow で明示的に許可
+#    - サイトマップも同時に更新
+
+# 3. セキュリティ向上
+#    - 管理画面やAPIエンドポイントは必ず Disallow に追加
+#    - 開発用ファイルが本番環境に残らないよう注意
+
+# 4. パフォーマンス最適化
+#    - Crawl-delay でクロール頻度を調整
+#    - 不要なリソースへのアクセスを制限
+
+# 5. 定期メンテナンス
+#    - 月1回程度でアクセスログを確認
+#    - 不正なクローラーがあれば robots.txt に追加
+#    - サイト構造変更時には必ず更新
+
+# ===================================
+# 参考: よく使用される設定例
+# ===================================
+
+# すべてを許可する場合:
+# User-agent: *
+# Allow: /
+
+# すべてを禁止する場合:
+# User-agent: *
+# Disallow: /
+
+# 画像ファイルのクロールを制御:
+# User-agent: Googlebot-Image
+# Allow: /images/
+# Disallow: /private-images/
+
+# 特定のファイル形式を制御:
+# User-agent: *
+# Disallow: /*.pdf$
+# Disallow: /*.zip$
+
+# モバイルクローラー向け設定:
+# User-agent: Googlebot-Mobile
+# Allow: /
+
+# ===================================
+# トラブルシューティング
+# ===================================
+
+# 1. robots.txt が効かない場合
+#    - ファイルの配置場所: ドメインルート直下 (/robots.txt)
+#    - 文字エンコーディング: UTF-8
+#    - 改行コード: LF または CRLF
+#    - ファイルサイズ: 500KB以下推奨
+
+# 2. Google Search Console での確認方法
+#    - robots.txt テスターツールを使用
+#    - クロール統計でアクセス状況を確認
+
+# 3. アクセス権限
+#    - robots.txt は誰でもアクセス可能である必要がある
+#    - HTTP ステータス 200 で返される必要がある
