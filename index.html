@@ -783,19 +783,7 @@
 
     <!-- Message Section -->
     <section id="message" class="section section-light">
-        <div class="interactive-message fade-in">
-            <div class="dynamic-gradient-bg" id="gradient-bg"></div>
-            <div class="mouse-tracker" id="mouse-tracker" style="display: none;"></div>
-            <div class="interactive-message-content">
-                <div class="message-text-interactive">
-                    <p>「地方では無理」「学歴で決まる」<br>
-                    そうやって諦められてきた挑戦を、もう一度信じ直したい。<br>
-                    自分の在り方で勝負できる人を、一人でも多く増やしたい。</p>
-                    <br>
-                    <p><strong>それが、BeMe+を始めた理由です。</strong></p>
-                </div>
-            </div>
-        </div>
+        <div id="message-root"></div>
     </section>
 
     <!-- CTA Section -->
@@ -1189,7 +1177,7 @@
             return positionRef;
         }
 
-        // Interactive Message Component
+        // Enhanced Interactive Message Component
         function InteractiveMessage() {
             const containerRef = React.useRef(null);
             const positionRef = useMousePositionRef(containerRef);
@@ -1206,7 +1194,7 @@
 
             const gradientStyle = {
                 background: isHovered 
-                    ? `radial-gradient(circle at ${position.x}px ${position.y}px, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.08) 30%, rgba(240, 147, 251, 0.06) 60%, transparent 80%)`
+                    ? `radial-gradient(circle at ${position.x}px ${position.y}px, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.08) 30%, rgba(240, 147, 251, 0.06) 60%, transparent 80%)`
                     : 'transparent'
             };
 
@@ -1215,20 +1203,49 @@
                 className: 'interactive-message fade-in',
                 onMouseEnter: () => setIsHovered(true),
                 onMouseLeave: () => setIsHovered(false),
+                style: {
+                    position: 'relative',
+                    overflow: 'hidden',
+                    background: 'white',
+                    color: 'var(--text-primary)',
+                    textAlign: 'center',
+                    borderRadius: '32px',
+                    padding: '100px 60px',
+                    margin: '0 32px',
+                    boxShadow: 'var(--shadow-soft)',
+                    border: '1px solid #f0f0f0'
+                },
                 children: [
                     React.createElement('div', {
                         key: 'gradient-bg',
                         className: 'dynamic-gradient-bg',
-                        style: gradientStyle
+                        style: {
+                            ...gradientStyle,
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            pointerEvents: 'none',
+                            transition: 'background 0.1s ease-out'
+                        }
                     }),
                     
                     isHovered && React.createElement(motion.div, {
                         key: 'mouse-tracker',
                         className: 'mouse-tracker',
                         style: {
+                            position: 'absolute',
+                            width: '20px',
+                            height: '20px',
+                            borderRadius: '50%',
+                            background: 'var(--primary-gradient)',
+                            pointerEvents: 'none',
+                            opacity: 0.6,
+                            zIndex: 1,
                             left: position.x - 10,
                             top: position.y - 10,
-                            opacity: isHovered ? 0.6 : 0
+                            transition: 'all 0.1s ease-out'
                         },
                         transition: {
                             type: "spring",
@@ -1240,8 +1257,19 @@
                     React.createElement('div', {
                         key: 'content',
                         className: 'interactive-message-content',
+                        style: {
+                            position: 'relative',
+                            zIndex: 2
+                        },
                         children: React.createElement('div', {
                             className: 'message-text-interactive',
+                            style: {
+                                fontSize: '22px',
+                                lineHeight: 1.8,
+                                maxWidth: '800px',
+                                margin: '0 auto',
+                                color: 'var(--text-primary)'
+                            },
                             children: [
                                 React.createElement('p', {
                                     key: 'text1',
@@ -1257,6 +1285,13 @@
                                 React.createElement('p', {
                                     key: 'text2',
                                     children: React.createElement('strong', {
+                                        style: {
+                                            background: 'var(--primary-gradient)',
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent',
+                                            backgroundClip: 'text',
+                                            fontWeight: 700
+                                        },
                                         children: 'それが、BeMe+を始めた理由です。'
                                     })
                                 })
@@ -1291,52 +1326,11 @@
             document.getElementById('hero-root')
         );
 
-        // Mouse tracking for message section
-        (function initMessageInteraction() {
-            const messageSection = document.querySelector('.interactive-message');
-            const gradientBg = document.getElementById('gradient-bg');
-            const mouseTracker = document.getElementById('mouse-tracker');
-            
-            if (!messageSection || !gradientBg || !mouseTracker) return;
-
-            let isHovered = false;
-
-            function updateMousePosition(e) {
-                if (!isHovered) return;
-                
-                const rect = messageSection.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                // Update gradient background
-                gradientBg.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.08) 30%, rgba(240, 147, 251, 0.06) 60%, transparent 80%)`;
-                
-                // Update mouse tracker position
-                mouseTracker.style.left = (x - 10) + 'px';
-                mouseTracker.style.top = (y - 10) + 'px';
-            }
-
-            messageSection.addEventListener('mouseenter', () => {
-                isHovered = true;
-                mouseTracker.style.display = 'block';
-                mouseTracker.style.opacity = '0.6';
-            });
-
-            messageSection.addEventListener('mouseleave', () => {
-                isHovered = false;
-                mouseTracker.style.display = 'none';
-                gradientBg.style.background = 'transparent';
-            });
-
-            messageSection.addEventListener('mousemove', updateMousePosition);
-            
-            // Touch support
-            messageSection.addEventListener('touchmove', (e) => {
-                if (!isHovered) return;
-                const touch = e.touches[0];
-                updateMousePosition(touch);
-            });
-        })();
+        // Render Message Component
+        ReactDOM.render(
+            React.createElement(InteractiveMessage),
+            document.getElementById('message-root')
+        );
 
         // Smooth scroll for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
