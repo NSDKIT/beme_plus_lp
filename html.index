@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>株式会社BeMe+ | 今の自分で、世界をひらく</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.min.js"></script>
+    <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --text-primary: #0a0a0a;
+            --text-secondary: #6b7280;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --bg-dark: #0a0a0a;
+            --bg-light: #fafafa;
+            --border-light: rgba(255, 255, 255, 0.1);
+            --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-dark);
+            overflow-x: hidden;
+        }
+
+        /* Glass morphism header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Enhanced button styles */
+        .btn {
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--border-light);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 2px solid rgba(107, 114, 128, 0.3);
+        }
+
+        .btn-ghost:hover {
+            background: var(--text-secondary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 60px;
+        }
+
+        /* Enhanced sections */
+        .section {
+            padding: 120px 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-dark {
+            background: var(--bg-dark);
+            color: white;
+        }
+
+        .section-light {
+            background: var(--bg-light);
+            color: var(--text-primary);
+        }
+
+        .section-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+        }
+
+        /* Philosophy card with glass effect */
+        .philosophy {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 32px;
+            padding: 100px 60px;
+            margin: 0 32px;
+            border: 1px solid var(--border-light);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .philosophy::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .section-title {
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .section-title-dark {
+            color: var(--text-primary);
+        }
+
+        .philosophy-text {
+            font-size: 20px;
+            color: var(--text-muted);
+            line-height: 1.8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Message section with animated gradient */
+        .message {
+            background: var(--primary-gradient);
+            color: white;
+            text-align: center;
+            border-radius: 32px;
+            padding: 100px 60px;
+            margin: 0 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        /* Interactive Message Section */
+        .interactive-message {
+            background: white;
+            color: var(--text-primary);
+            text-align: center;
+            border-radius: 32px;
+            padding: 100px 60px;
+            margin: 0 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid #f0f0f0;
+        }
+
+        .interactive-message-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .dynamic-gradient-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transition: background 0.1s ease-out;
+        }
+
+        .message-text-interactive {
+            font-size: 22px;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--text-primary);
+        }
+
+        .message-text-interactive strong {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .mouse-tracker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            pointer-events: none;
+            opacity: 0.6;
+            z-index: 1;
+            transition: all 0.1s ease-out;
+        }
+
+        .mouse-tracker::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: inherit;
+            opacity: 0.3;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0.1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+        }
+
+        /* Enhanced CTA section */
+        .cta-section {
+            padding: 120px 0;
+            background: var(--bg-dark);
+        }
+
+        .cta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .cta-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 50px 40px;
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .cta-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .cta-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .cta-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        /* Enhanced footer */
+        .footer {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #9ca3af;
+            padding: 80px 32px 40px;
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .footer-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-bottom: 50px;
+            text-align: left;
+        }
+
+        .footer-info div {
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .copyright {
+            border-top: 1px solid #374151;
+            padding-top: 32px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Feature section styles */
+        .projects {
+            padding: 120px 0;
+            background: var(--bg-light);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2px;
+            margin-top: 80px;
+            background: #e5e7eb;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .feature-card {
+            background: white;
+            padding: 60px 40px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            background: #f8fafc;
+            transform: scale(1.02);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .feature-subtitle {
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 16px;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 24px;
+            font-size: 15px;
+        }
+
+        .feature-link {
+            display: inline-flex;
+            align-items: center;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            gap: 8px;
+        }
+
+        .feature-link:hover {
+            color: #4f46e5;
+            transform: translateX(4px);
+        }
+
+        .coming-soon {
+            opacity: 0.7;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 2px dashed #cbd5e1;
+        }
+
+        .coming-soon .feature-icon {
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+
+            .section {
+                padding: 80px 20px;
+            }
+
+            .philosophy,
+            .message {
+                padding: 60px 30px;
+                margin: 0 20px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+                margin-top: 60px;
+            }
+
+            .feature-card {
+                padding: 40px 30px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .btn {
+                min-width: 200px;
+                justify-content: center;
+            }
+
+            .cta-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection styling */
+        ::selection {
+            background: rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="#" class="logo">BeMe+</a>
+            <ul class="nav-links">
+                <li><a href="#philosophy">Philosophy</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#message">Message</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <div id="hero-root"></div>
+
+    <!-- Philosophy Section -->
+    <section id="philosophy" class="section section-dark">
+        <div class="philosophy fade-in">
+            <h2 class="section-title">わたしたちが大切にしていること</h2>
+            <div class="philosophy-text">
+                <p>経験やスキルよりも、どんな姿勢で挑むか。<br>
+                「こうあるべき」じゃなく、「こうありたい」から始めよう。</p>
+                <br>
+                <p><strong>BeMe+は、「今の自分を武器にできる社会」を信じて動いています。</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section projects">
+        <h2 class="section-title section-title-dark" style="text-align: center;">プロジェクト紹介</h2>
+        <div class="feature-grid fade-in">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">InternMatch</h3>
+                <p class="feature-subtitle">偽らずに挑戦できるインターン支援</p>
+                <p class="feature-description">
+                    地方にいながら、自分らしく企業とつながれるインターン設計支援。経験やスキルではなく、「在り方」でマッチングする新しい形のサービスです。
+                </p>
+                <a href="#" class="feature-link">
+                    詳しく見る
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">声キャン！</h3>
+                <p class="feature-subtitle">届かない発信を"共感"に変える採用支援</p>
+                <p class="feature-description">
+                    学生の声から採用発信を見直し、改善提案まで行う企業支援プロジェクト。「伝えたつもり」を卒業し、真の共感を生む採用コミュニケーションを実現します。
+                </p>
+                <a href="#" class="feature-link">
+                    詳しく見る
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="feature-card coming-soon">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Coming Soon</h3>
+                <p class="feature-subtitle">業務効率化・共創型DX支援</p>
+                <p class="feature-description">
+                    属人化しない仕組みで、"人が活きる現場"を再設計する。業務フローの棚卸し・整理・ツール化支援を通じて、文化と行動が続く仕組みづくりを共創者として支援します。
+                </p>
+                <div class="feature-link" style="opacity: 0.5; cursor: not-allowed;">
+                    準備中
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Message Section -->
+    <section id="message" class="section section-light">
+        <div class="interactive-message fade-in">
+            <div class="dynamic-gradient-bg" id="gradient-bg"></div>
+            <div class="mouse-tracker" id="mouse-tracker" style="display: none;"></div>
+            <div class="interactive-message-content">
+                <div class="message-text-interactive">
+                    <p>「地方では無理」「学歴で決まる」<br>
+                    そうやって諦められてきた挑戦を、もう一度信じ直したい。<br>
+                    自分の在り方で勝負できる人を、一人でも多く増やしたい。</p>
+                    <br>
+                    <p><strong>それが、BeMe+を始めた理由です。</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta-section">
+        <h2 class="section-title" style="text-align: center;">行動する</h2>
+        <div class="cta-grid">
+            <div class="cta-card fade-in">
+                <h3 class="cta-title">学生の方</h3>
+                <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 14px;">
+                    今の自分らしく挑戦したい
+                </p>
+                <a href="#" class="btn btn-primary">InternMatchで挑戦する</a>
+            </div>
+            <div class="cta-card fade-in">
+                <h3 class="cta-title">企業の方</h3>
+                <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 14px;">
+                    採用発信の改善や人材確保をお考えの方
+                </p>
+                <div class="button-group" style="margin-top: 0; gap: 12px;">
+                    <a href="#" class="btn btn-primary">声キャン！に相談する</a>
+                    <a href="#" class="btn btn-secondary">InternMatchに公募する</a>
+                </div>
+            </div>
+            <div class="cta-card fade-in">
+                <h3 class="cta-title">パートナー・支援者の方</h3>
+                <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 14px;">
+                    一緒に社会を変えていきませんか
+                </p>
+                <a href="#" class="btn btn-ghost">一緒に取り組みたい</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Footer -->
+    <footer id="contact" class="footer">
+        <div class="footer-content">
+            <h3 class="footer-title">株式会社BeMe+</h3>
+            <div class="footer-info">
+                <div>
+                    <strong style="color: white;">所在地</strong><br>
+                    福井県（予定）
+                </div>
+                <div>
+                    <strong style="color: white;">代表</strong><br>
+                    西田啓人
+                </div>
+                <div>
+                    <strong style="color: white;">お問い合わせ</strong><br>
+                    <a href="mailto:nsdkit@beme_plus.co.jp" style="color: #9ca3af; text-decoration: none;">
+                        nsdkit@beme_plus.co.jp
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <a href="#">Instagram</a>
+                <a href="#">X (Twitter)</a>
+                <a href="#">プライバシーポリシー</a>
+                <a href="#">利用規約</a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 BeMe+ Inc. All rights reserved. | Designed with ❤️ for a better world</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { motion, useMotionValue, useTransform, animate } = window['framer-motion'];
+        const { Circle } = lucideReact;
+
+        // Utility function for className merging
+        function cn(...classes) {
+            return classes.filter(Boolean).join(' ');
+        }
+
+        function ElegantShape({
+            className = '',
+            delay = 0,
+            width = 400,
+            height = 100,
+            rotate = 0,
+            gradient = "from-white/[0.08]"
+        }) {
+            const gradientClass = gradient.includes('indigo') ? 'linear-gradient(45deg, rgba(99, 102, 241, 0.15), transparent)' :
+                                 gradient.includes('rose') ? 'linear-gradient(45deg, rgba(244, 63, 94, 0.15), transparent)' :
+                                 gradient.includes('violet') ? 'linear-gradient(45deg, rgba(139, 92, 246, 0.15), transparent)' :
+                                 gradient.includes('amber') ? 'linear-gradient(45deg, rgba(245, 158, 11, 0.15), transparent)' :
+                                 gradient.includes('cyan') ? 'linear-gradient(45deg, rgba(6, 182, 212, 0.15), transparent)' :
+                                 'linear-gradient(45deg, rgba(255, 255, 255, 0.08), transparent)';
+
+            return React.createElement(motion.div, {
+                initial: {
+                    opacity: 0,
+                    y: -150,
+                    rotate: rotate - 15,
+                },
+                animate: {
+                    opacity: 1,
+                    y: 0,
+                    rotate: rotate,
+                },
+                transition: {
+                    duration: 2.4,
+                    delay,
+                    ease: [0.23, 0.86, 0.39, 0.96],
+                    opacity: { duration: 1.2 },
+                },
+                className: cn("absolute", className),
+                children: React.createElement(motion.div, {
+                    animate: {
+                        y: [0, 15, 0],
+                    },
+                    transition: {
+                        duration: 12,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                    },
+                    style: {
+                        width,
+                        height,
+                    },
+                    className: "relative",
+                    children: React.createElement('div', {
+                        className: "absolute inset-0 rounded-full backdrop-blur-sm border-2",
+                        style: {
+                            background: gradientClass,
+                            borderColor: 'rgba(255, 255, 255, 0.15)',
+                            boxShadow: '0 8px 32px 0 rgba(255, 255, 255, 0.1)',
+                        }
+                    })
+                })
+            });
+        }
+
+        function HeroGeometric({
+            badge = "BeMe+",
+            title1 = "今の自分で、",
+            title2 = "世界をひらく。"
+        }) {
+            const fadeUpVariants = {
+                hidden: { opacity: 0, y: 30 },
+                visible: (i) => ({
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                        duration: 1,
+                        delay: 0.5 + i * 0.2,
+                        ease: [0.25, 0.4, 0.25, 1],
+                    },
+                }),
+            };
+
+            return React.createElement('div', {
+                className: "relative min-h-screen w-full flex items-center justify-center overflow-hidden",
+                style: { background: '#0a0a0a' },
+                children: [
+                    React.createElement('div', {
+                        key: 'bg-gradient',
+                        className: "absolute inset-0 blur-3xl",
+                        style: {
+                            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.08), transparent, rgba(118, 75, 162, 0.08))'
+                        }
+                    }),
+                    
+                    React.createElement('div', {
+                        key: 'shapes',
+                        className: "absolute inset-0 overflow-hidden",
+                        children: [
+                            React.createElement(ElegantShape, {
+                                key: 'shape-1',
+                                delay: 0.3,
+                                width: 600,
+                                height: 140,
+                                rotate: 12,
+                                gradient: "from-indigo-500/[0.15]",
+                                className: "absolute",
+                                style: { left: '-5%', top: '20%' }
+                            }),
+                            React.createElement(ElegantShape, {
+                                key: 'shape-2',
+                                delay: 0.5,
+                                width: 500,
+                                height: 120,
+                                rotate: -15,
+                                gradient: "from-rose-500/[0.15]",
+                                className: "absolute",
+                                style: { right: '0%', top: '75%' }
+                            }),
+                            React.createElement(ElegantShape, {
+                                key: 'shape-3',
+                                delay: 0.4,
+                                width: 300,
+                                height: 80,
+                                rotate: -8,
+                                gradient: "from-violet-500/[0.15]",
+                                className: "absolute",
+                                style: { left: '10%', bottom: '10%' }
+                            }),
+                            React.createElement(ElegantShape, {
+                                key: 'shape-4',
+                                delay: 0.6,
+                                width: 200,
+                                height: 60,
+                                rotate: 20,
+                                gradient: "from-amber-500/[0.15]",
+                                className: "absolute",
+                                style: { right: '20%', top: '15%' }
+                            }),
+                            React.createElement(ElegantShape, {
+                                key: 'shape-5',
+                                delay: 0.7,
+                                width: 150,
+                                height: 40,
+                                rotate: -25,
+                                gradient: "from-cyan-500/[0.15]",
+                                className: "absolute",
+                                style: { left: '25%', top: '10%' }
+                            })
+                        ]
+                    }),
+
+                    React.createElement('div', {
+                        key: 'content',
+                        className: "relative z-10 container mx-auto px-4 md:px-6",
+                        style: { 
+                            width: '100%',
+                            maxWidth: '1200px',
+                            paddingLeft: '2rem',
+                            paddingRight: '2rem'
+                        },
+                        children: React.createElement('div', {
+                            className: "max-w-4xl mx-auto text-center",
+                            children: [
+                                React.createElement(motion.div, {
+                                    key: 'badge',
+                                    custom: 0,
+                                    variants: fadeUpVariants,
+                                    initial: "hidden",
+                                    animate: "visible",
+                                    className: "inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 md:mb-12",
+                                    style: {
+                                        background: 'rgba(255, 255, 255, 0.05)',
+                                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                                        backdropFilter: 'blur(10px)'
+                                    },
+                                    children: [
+                                        React.createElement(Circle, {
+                                            key: 'circle',
+                                            size: 8,
+                                            style: {
+                                                fill: 'rgba(102, 126, 234, 0.8)',
+                                                color: 'rgba(102, 126, 234, 0.8)'
+                                            }
+                                        }),
+                                        React.createElement('span', {
+                                            key: 'badge-text',
+                                            className: "text-sm tracking-wide",
+                                            style: { color: 'rgba(255, 255, 255, 0.7)' },
+                                            children: badge
+                                        })
+                                    ]
+                                }),
+
+                                React.createElement(motion.div, {
+                                    key: 'title',
+                                    custom: 1,
+                                    variants: fadeUpVariants,
+                                    initial: "hidden",
+                                    animate: "visible",
+                                    children: React.createElement('h1', {
+                                        className: "font-bold mb-6 md:mb-8 tracking-tight",
+                                        style: {
+                                            fontSize: 'clamp(3rem, 8vw, 6rem)',
+                                            lineHeight: '1.1',
+                                            letterSpacing: '-0.02em'
+                                        },
+                                        children: [
+                                            React.createElement('span', {
+                                                key: 'title1',
+                                                style: {
+                                                    background: 'linear-gradient(to bottom, white, rgba(255, 255, 255, 0.8))',
+                                                    WebkitBackgroundClip: 'text',
+                                                    WebkitTextFillColor: 'transparent',
+                                                    backgroundClip: 'text'
+                                                },
+                                                children: title1
+                                            }),
+                                            React.createElement('br', { key: 'br' }),
+                                            React.createElement('span', {
+                                                key: 'title2',
+                                                style: {
+                                                    background: 'linear-gradient(135deg, #667eea, rgba(255, 255, 255, 0.9), #764ba2)',
+                                                    WebkitBackgroundClip: 'text',
+                                                    WebkitTextFillColor: 'transparent',
+                                                    backgroundClip: 'text'
+                                                },
+                                                children: title2
+                                            })
+                                        ]
+                                    })
+                                }),
+
+                                React.createElement(motion.div, {
+                                    key: 'subtitle',
+                                    custom: 2,
+                                    variants: fadeUpVariants,
+                                    initial: "hidden",
+                                    animate: "visible",
+                                    children: React.createElement('p', {
+                                        className: "mb-8 leading-relaxed font-light tracking-wide max-w-2xl mx-auto px-4",
+                                        style: {
+                                            fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+                                            color: 'rgba(255, 255, 255, 0.6)',
+                                            lineHeight: '1.7'
+                                        },
+                                        children: "株式会社BeMe+は、「在り方」を軸に、人と社会の可能性をひらく共創型プロジェクトチームです。"
+                                    })
+                                }),
+
+                                React.createElement(motion.div, {
+                                    key: 'buttons',
+                                    custom: 3,
+                                    variants: fadeUpVariants,
+                                    initial: "hidden",
+                                    animate: "visible",
+                                    className: "flex gap-6 justify-center flex-wrap",
+                                    children: [
+                                        React.createElement('a', {
+                                            key: 'btn1',
+                                            href: '#internmatch',
+                                            className: 'btn btn-primary',
+                                            children: 'InternMatchを見る'
+                                        }),
+                                        React.createElement('a', {
+                                            key: 'btn2',
+                                            href: '#koecan',
+                                            className: 'btn btn-secondary',
+                                            children: '声キャン！を見る'
+                                        })
+                                    ]
+                                })
+                            ]
+                        })
+                    }),
+
+                    React.createElement('div', {
+                        key: 'overlay',
+                        className: "absolute inset-0 pointer-events-none",
+                        style: {
+                            background: 'linear-gradient(to top, #0a0a0a, transparent, rgba(10, 10, 10, 0.8))'
+                        }
+                    })
+                ]
+            });
+        }
+
+        // Mouse Position Hook
+        function useMousePositionRef(containerRef) {
+            const positionRef = React.useRef({ x: 0, y: 0 });
+
+            React.useEffect(() => {
+                const updatePosition = (x, y) => {
+                    if (containerRef && containerRef.current) {
+                        const rect = containerRef.current.getBoundingClientRect();
+                        const relativeX = x - rect.left;
+                        const relativeY = y - rect.top;
+                        positionRef.current = { x: relativeX, y: relativeY };
+                    } else {
+                        positionRef.current = { x, y };
+                    }
+                };
+
+                const handleMouseMove = (ev) => {
+                    updatePosition(ev.clientX, ev.clientY);
+                };
+
+                const handleTouchMove = (ev) => {
+                    const touch = ev.touches[0];
+                    updatePosition(touch.clientX, touch.clientY);
+                };
+
+                window.addEventListener("mousemove", handleMouseMove);
+                window.addEventListener("touchmove", handleTouchMove);
+
+                return () => {
+                    window.removeEventListener("mousemove", handleMouseMove);
+                    window.removeEventListener("touchmove", handleTouchMove);
+                };
+            }, [containerRef]);
+
+            return positionRef;
+        }
+
+        // Interactive Message Component
+        function InteractiveMessage() {
+            const containerRef = React.useRef(null);
+            const positionRef = useMousePositionRef(containerRef);
+            const [position, setPosition] = React.useState({ x: 0, y: 0 });
+            const [isHovered, setIsHovered] = React.useState(false);
+
+            React.useEffect(() => {
+                const updatePosition = () => {
+                    setPosition({ ...positionRef.current });
+                };
+                const interval = setInterval(updatePosition, 16); // ~60fps
+                return () => clearInterval(interval);
+            }, []);
+
+            const gradientStyle = {
+                background: isHovered 
+                    ? `radial-gradient(circle at ${position.x}px ${position.y}px, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.08) 30%, rgba(240, 147, 251, 0.06) 60%, transparent 80%)`
+                    : 'transparent'
+            };
+
+            return React.createElement('div', {
+                ref: containerRef,
+                className: 'interactive-message fade-in',
+                onMouseEnter: () => setIsHovered(true),
+                onMouseLeave: () => setIsHovered(false),
+                children: [
+                    React.createElement('div', {
+                        key: 'gradient-bg',
+                        className: 'dynamic-gradient-bg',
+                        style: gradientStyle
+                    }),
+                    
+                    isHovered && React.createElement(motion.div, {
+                        key: 'mouse-tracker',
+                        className: 'mouse-tracker',
+                        style: {
+                            left: position.x - 10,
+                            top: position.y - 10,
+                            opacity: isHovered ? 0.6 : 0
+                        },
+                        transition: {
+                            type: "spring",
+                            damping: 20,
+                            stiffness: 300
+                        }
+                    }),
+
+                    React.createElement('div', {
+                        key: 'content',
+                        className: 'interactive-message-content',
+                        children: React.createElement('div', {
+                            className: 'message-text-interactive',
+                            children: [
+                                React.createElement('p', {
+                                    key: 'text1',
+                                    children: [
+                                        '「地方では無理」「学歴で決まる」',
+                                        React.createElement('br', { key: 'br1' }),
+                                        'そうやって諦められてきた挑戦を、もう一度信じ直したい。',
+                                        React.createElement('br', { key: 'br2' }),
+                                        '自分の在り方で勝負できる人を、一人でも多く増やしたい。'
+                                    ]
+                                }),
+                                React.createElement('br', { key: 'br-main' }),
+                                React.createElement('p', {
+                                    key: 'text2',
+                                    children: React.createElement('strong', {
+                                        children: 'それが、BeMe+を始めた理由です。'
+                                    })
+                                })
+                            ]
+                        })
+                    }),
+
+                    React.createElement('div', {
+                        key: 'hint',
+                        style: {
+                            position: 'absolute',
+                            bottom: '20px',
+                            right: '30px',
+                            fontSize: '14px',
+                            color: '#9ca3af',
+                            opacity: isHovered ? 0 : 0.6,
+                            transition: 'opacity 0.3s ease'
+                        },
+                        children: 'マウスを動かしてみてください'
+                    })
+                ]
+            });
+        }
+
+        // Render Hero Component
+        ReactDOM.render(
+            React.createElement(HeroGeometric, {
+                badge: "BeMe+",
+                title1: "今の自分で、",
+                title2: "世界をひらく。"
+            }),
+            document.getElementById('hero-root')
+        );
+
+        // Mouse tracking for message section
+        (function initMessageInteraction() {
+            const messageSection = document.querySelector('.interactive-message');
+            const gradientBg = document.getElementById('gradient-bg');
+            const mouseTracker = document.getElementById('mouse-tracker');
+            
+            if (!messageSection || !gradientBg || !mouseTracker) return;
+
+            let isHovered = false;
+
+            function updateMousePosition(e) {
+                if (!isHovered) return;
+                
+                const rect = messageSection.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Update gradient background
+                gradientBg.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.08) 30%, rgba(240, 147, 251, 0.06) 60%, transparent 80%)`;
+                
+                // Update mouse tracker position
+                mouseTracker.style.left = (x - 10) + 'px';
+                mouseTracker.style.top = (y - 10) + 'px';
+            }
+
+            messageSection.addEventListener('mouseenter', () => {
+                isHovered = true;
+                mouseTracker.style.display = 'block';
+                mouseTracker.style.opacity = '0.6';
+            });
+
+            messageSection.addEventListener('mouseleave', () => {
+                isHovered = false;
+                mouseTracker.style.display = 'none';
+                gradientBg.style.background = 'transparent';
+            });
+
+            messageSection.addEventListener('mousemove', updateMousePosition);
+            
+            // Touch support
+            messageSection.addEventListener('touchmove', (e) => {
+                if (!isHovered) return;
+                const touch = e.touches[0];
+                updateMousePosition(touch);
+            });
+        })();
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerHeight = 70;
+                    const targetPosition = target.offsetTop - headerHeight;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0.2s';
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all elements that should animate
+        document.querySelectorAll('.philosophy, .feature-grid, .message, .cta-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Header scroll effect
+        let lastScrollY = window.scrollY;
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            const currentScrollY = window.scrollY;
+            
+            if (currentScrollY > 100) {
+                header.style.background = 'rgba(10, 10, 10, 0.95)';
+                header.style.backdropFilter = 'blur(30px)';
+            } else {
+                header.style.background = 'rgba(10, 10, 10, 0.8)';
+                header.style.backdropFilter = 'blur(20px)';
+            }
+            
+            lastScrollY = currentScrollY;
+        });
+
+        // Add stagger animation to feature cards
+        setTimeout(() => {
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.animation = 'fadeInUp 0.8s ease-out forwards';
+            });
+        }, 1000);
+
+        // Parallax effect for shapes (if supported)
+        if (window.DeviceMotionEvent) {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const shapes = document.querySelectorAll('[class*="shape-"]');
+                shapes.forEach((shape, index) => {
+                    const speed = 0.5 + (index * 0.1);
+                    shape.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+        }
+    </script>
+</body>
+</html>
