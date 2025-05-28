@@ -249,35 +249,12 @@
             margin: 0 auto;
         }
 
-        /* Message section with animated gradient */
-        .message {
-            background: var(--primary-gradient);
-            color: white;
-            text-align: center;
-            border-radius: 32px;
-            padding: 100px 60px;
-            margin: 0 32px;
-            position: relative;
-            overflow: hidden;
+        /* Message section styles */
+        .section-light {
+            background: var(--bg-light);
+            color: var(--text-primary);
         }
 
-        .message::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        /* Interactive Message Section */
         .interactive-message {
             background: white;
             color: var(--text-primary);
@@ -289,11 +266,10 @@
             overflow: hidden;
             box-shadow: var(--shadow-soft);
             border: 1px solid #f0f0f0;
-        }
-
-        .interactive-message-content {
-            position: relative;
-            z-index: 2;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .dynamic-gradient-bg {
@@ -304,6 +280,26 @@
             height: 100%;
             pointer-events: none;
             transition: background 0.1s ease-out;
+            z-index: 1;
+        }
+
+        .mouse-tracker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 2;
+            transition: all 0.1s ease-out;
+            display: none;
+        }
+
+        .interactive-message-content {
+            position: relative;
+            z-index: 3;
+            width: 100%;
         }
 
         .message-text-interactive {
@@ -320,47 +316,6 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             font-weight: 700;
-        }
-
-        .mouse-tracker {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            pointer-events: none;
-            opacity: 0.6;
-            z-index: 1;
-            transition: all 0.1s ease-out;
-        }
-
-        .mouse-tracker::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: inherit;
-            opacity: 0.3;
-            transform: translate(-50%, -50%);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.3;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.5);
-                opacity: 0.1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.3;
-            }
         }
 
         /* Enhanced CTA section */
@@ -783,9 +738,9 @@
 
     <!-- Message Section -->
     <section id="message" class="section section-light">
-        <div class="interactive-message fade-in">
+        <div class="interactive-message">
             <div class="dynamic-gradient-bg" id="gradient-bg"></div>
-            <div class="mouse-tracker" id="mouse-tracker" style="display: none;"></div>
+            <div class="mouse-tracker" id="mouse-tracker"></div>
             <div class="interactive-message-content">
                 <div class="message-text-interactive">
                     <p>「地方では無理」「学歴で決まる」<br>
@@ -1454,6 +1409,7 @@
             messageSection.addEventListener('mouseleave', () => {
                 isHovered = false;
                 mouseTracker.style.display = 'none';
+                mouseTracker.style.opacity = '0';
                 gradientBg.style.background = 'transparent';
             });
 
