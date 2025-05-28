@@ -783,7 +783,19 @@
 
     <!-- Message Section -->
     <section id="message" class="section section-light">
-        <div id="message-root"></div>
+        <div class="interactive-message fade-in">
+            <div class="dynamic-gradient-bg" id="gradient-bg"></div>
+            <div class="mouse-tracker" id="mouse-tracker" style="display: none;"></div>
+            <div class="interactive-message-content">
+                <div class="message-text-interactive">
+                    <p>「地方では無理」「学歴で決まる」<br>
+                    そうやって諦められてきた挑戦を、もう一度信じ直したい。<br>
+                    自分の在り方で勝負できる人を、一人でも多く増やしたい。</p>
+                    <br>
+                    <p><strong>それが、BeMe+を始めた理由です。</strong></p>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- CTA Section -->
@@ -1407,6 +1419,53 @@
                 });
             });
         }
+
+        // Mouse tracking for message section
+        (function initMessageInteraction() {
+            const messageSection = document.querySelector('.interactive-message');
+            const gradientBg = document.getElementById('gradient-bg');
+            const mouseTracker = document.getElementById('mouse-tracker');
+            
+            if (!messageSection || !gradientBg || !mouseTracker) return;
+
+            let isHovered = false;
+
+            function updateMousePosition(e) {
+                if (!isHovered) return;
+                
+                const rect = messageSection.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Update gradient background
+                gradientBg.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.08) 30%, rgba(240, 147, 251, 0.06) 60%, transparent 80%)`;
+                
+                // Update mouse tracker position
+                mouseTracker.style.left = (x - 10) + 'px';
+                mouseTracker.style.top = (y - 10) + 'px';
+            }
+
+            messageSection.addEventListener('mouseenter', () => {
+                isHovered = true;
+                mouseTracker.style.display = 'block';
+                mouseTracker.style.opacity = '0.6';
+            });
+
+            messageSection.addEventListener('mouseleave', () => {
+                isHovered = false;
+                mouseTracker.style.display = 'none';
+                gradientBg.style.background = 'transparent';
+            });
+
+            messageSection.addEventListener('mousemove', updateMousePosition);
+            
+            // Touch support
+            messageSection.addEventListener('touchmove', (e) => {
+                if (!isHovered) return;
+                const touch = e.touches[0];
+                updateMousePosition(touch);
+            });
+        })();
     </script>
 </body>
 </html>
